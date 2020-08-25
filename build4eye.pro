@@ -21,11 +21,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     algoserver.cpp \
+    datasoruce.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     algoserver.h \
+    datasoruce.h \
     mainwindow.h
 
 FORMS += \

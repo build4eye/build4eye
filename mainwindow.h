@@ -5,6 +5,8 @@
 #include <QWebSocket>
 #include <QWebSocketServer>
 #include <QMessageBox>
+#include <QFileDialog>
+#include "datasoruce.h"
 #include "algoserver.h"
 
 QT_BEGIN_NAMESPACE
@@ -25,12 +27,20 @@ private slots:
     void slotNewWebsocketConn();
     void slotNewWebsocketDisconn();
 
+    void on_openfilebutton_triggered();
+
+    void on_up_triggered();
+
 private:
     Ui::MainWindow *ui;
 
 public:
+    QMap<QString, DataSoruce*> dataSoruceMap;
     QMap<QString, AlgoServer*> algoServerMap;
 private:
     QWebSocketServer *_pWebSocketServer;
+
+//FIXME:零时的代码
+    void creatDataSoruce(QImage *image);
 };
 #endif // MAINWINDOW_H
