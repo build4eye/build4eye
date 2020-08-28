@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QTextEdit>
+#include <QMdiSubWindow>
+#include <QFileInfo>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,26 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("build4eye");
 
     webSocketStartListen(10080);
-
     //FIXME：暂时指定两个显示图片，以后采用动态
-    //window1
- //   QLabel *window1 = ui->label;
- //   ui->mdiArea->addSubWindow(window1);     //将window1放进mdiArea框架
-
-    //window2
-    QTextEdit *window2 = new QTextEdit;
-    window2->setHtml("C++");
-    ui->mdiArea->addSubWindow(window2);
-
-    //window3
-    QTextEdit *window3 = new QTextEdit;
-    window3->setHtml("Java");
-    ui->mdiArea->addSubWindow(window3);
-
-    //window4
-    QTextEdit *window4 = new QTextEdit;
-    window4->setHtml("Hello World");
-    ui->mdiArea->addSubWindow(window4);
 }
 
 MainWindow::~MainWindow()
@@ -37,6 +20,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::slotNewProject()
+{
+    QListWidgetItem *newItem=new QListWidgetItem(QIcon(":/arrowRight"),"图片灰度（项目名称）");    //创建一个Item
+    newItem->setSizeHint(QSize(this->width(),25));//设置宽度、高度
+    ui->listWidget->addItem(newItem);         //加到QListWidget中
+}
 void MainWindow::webSocketStartListen(qint32 port)
 {
     _pWebSocketServer = new QWebSocketServer("build4eye",  QWebSocketServer::NonSecureMode, 0);
@@ -97,6 +86,18 @@ void MainWindow::on_openfilebutton_triggered()
 {
     QString s = QFileDialog::getOpenFileName(this,"选择文件","/", "Files(*.*)");
 
+    QFileInfo fi;
+    QString file_name;
+    fi = QFileInfo(s);
+    file_name = fi.fileName();
+    QListWidgetItem *newItem=new QListWidgetItem(QIcon(s),file_name);    //创建一个Item
+    newItem->setSizeHint(QSize(ui->listWidget->width()-50,25));//设置宽度、高度
+    ui->listWidget->addItem(newItem);         //加到QListWidget中
+
+    QListWidgetItem *item = new QListWidgetItem(QIcon(s),file_name);       //创建一个newItem
+    ui->listWidget->insertItem(0,item); //将该newItem插入到后面
+   // this->setItemWidget(newItem, buddy); //将buddy赋给该newItem
+
     //FIXME:下面都是一些零时的代码
     QImage image;//转换成QImage
     image.load(s);
@@ -120,15 +121,21 @@ void MainWindow::on_openfilebutton_triggered()
 
     connect(ui->up,SIGNAL(triggered()), ds, SLOT(slotDataUp()));
 
-    creatDataSoruce(&image);
+    //方法1
+    QLabel *l = new QLabel;
+    l->setPixmap(QPixmap::fromImage(image));
+    ui->mdiArea->addSubWindow(l);
+    l->show();
+    //方法2
+    //    QLabel *l = new QLabel;
+    //    l->setPixmap(QPixmap::fromImage(image));
+    //    QMdiSubWindow *newwin = new QMdiSubWindow;
+    //    newwin->resize(200,200);
+    //    newwin->setAttribute(Qt::WA_DeleteOnClose);
+    //    newwin->setWidget(l);
+    //    ui->mdiArea->addSubWindow(newwin);     //将window1放进mdiArea框架
+    //    newwin->show();
 }
-
-//FIXME:下面都是一些零时的代码
-void MainWindow::creatDataSoruce(QImage *image)
-{
-    ui->label->setPixmap(QPixmap::fromImage(*image));
-}
-
 
 void MainWindow::on_up_triggered()
 {

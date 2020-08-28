@@ -28,7 +28,7 @@ private slots:
     void slotNewWebsocketDisconn();
 
     void on_openfilebutton_triggered();
-
+    void slotNewProject();
     void on_up_triggered();
 
 private:
@@ -39,8 +39,5 @@ public:
     QMap<QString, AlgoServer*> algoServerMap;
 private:
     QWebSocketServer *_pWebSocketServer;
-
-//FIXME:零时的代码
-    void creatDataSoruce(QImage *image);
 };
 #endif // MAINWINDOW_H
