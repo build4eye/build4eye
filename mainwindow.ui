@@ -64,7 +64,8 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(198, 198, 198);</string>
+         <string notr="true">background-color: rgb(55, 56, 58);
+</string>
         </property>
         <layout class="QFormLayout" name="formLayout">
          <property name="rowWrapPolicy">
@@ -254,15 +255,18 @@
        <widget class="QListWidget" name="listWidget">
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>250</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
+          <width>250</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(65, 66, 70);</string>
         </property>
        </widget>
       </item>
@@ -270,6 +274,15 @@
        <widget class="QMdiArea" name="mdiArea">
         <property name="styleSheet">
          <string notr="true"/>
+        </property>
+        <property name="background">
+         <brush brushstyle="SolidPattern">
+          <color alpha="240">
+           <red>57</red>
+           <green>58</green>
+           <blue>62</blue>
+          </color>
+         </brush>
         </property>
        </widget>
       </item>
@@ -283,7 +296,7 @@
      <x>0</x>
      <y>0</y>
      <width>1025</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

@@ -4,6 +4,8 @@
 #include <QMdiSubWindow>
 #include <QFileInfo>
 
+#include "fileListBuddy.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -12,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("build4eye");
 
     webSocketStartListen(10080);
-    //FIXME：暂时指定两个显示图片，以后采用动态
 }
 
 MainWindow::~MainWindow()
@@ -22,10 +23,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotNewProject()
 {
-    QListWidgetItem *newItem=new QListWidgetItem(QIcon(":/arrowRight"),"图片灰度（项目名称）");    //创建一个Item
-    newItem->setSizeHint(QSize(this->width(),25));//设置宽度、高度
-    ui->listWidget->addItem(newItem);         //加到QListWidget中
+
 }
+
 void MainWindow::webSocketStartListen(qint32 port)
 {
     _pWebSocketServer = new QWebSocketServer("build4eye",  QWebSocketServer::NonSecureMode, 0);
@@ -36,7 +36,6 @@ void MainWindow::webSocketStartListen(qint32 port)
     _pWebSocketServer->listen(QHostAddress::Any, port);
 
     connect(_pWebSocketServer, SIGNAL(newConnection()), this, SLOT(slotNewWebsocketConn()));
-
 }
 
 void MainWindow::slotNewWebsocketConn()
@@ -84,42 +83,61 @@ void MainWindow::slotNewWebsocketDisconn()
 
 void MainWindow::on_openfilebutton_triggered()
 {
+    QString image_size;
     QString s = QFileDialog::getOpenFileName(this,"选择文件","/", "Files(*.*)");
+    QImage image;//转换成QImage
+    image.load(s);
 
+    //创建一个文件对象
     QFileInfo fi;
     QString file_name;
     fi = QFileInfo(s);
     file_name = fi.fileName();
-    QListWidgetItem *newItem=new QListWidgetItem(QIcon(s),file_name);    //创建一个Item
-    newItem->setSizeHint(QSize(ui->listWidget->width()-50,25));//设置宽度、高度
-    ui->listWidget->addItem(newItem);         //加到QListWidget中
+    fileListBuddy *buddy= new fileListBuddy();
 
-    QListWidgetItem *item = new QListWidgetItem(QIcon(s),file_name);       //创建一个newItem
-    ui->listWidget->insertItem(0,item); //将该newItem插入到后面
-   // this->setItemWidget(newItem, buddy); //将buddy赋给该newItem
+    QPixmap pixmap = QPixmap::fromImage(image);
+    int with = buddy->head->width();
+    int height = buddy->head->height();
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    image_size = QString::number(image.width())+" x "+QString::number(image.height());
+
+    buddy->head->setPixmap(fitpixmap);
+    buddy->name->setText(file_name);
+    buddy->size->setText(image_size);
+    buddy->sign->setText(s);
+
+    QListWidgetItem *newItem = new QListWidgetItem();       //创建一个newItem
+    newItem->setSizeHint(QSize(ui->listWidget->width() - 5,74));
+    ui->listWidget->insertItem(ui->listWidget->count(),newItem); //将该newItem插入到后面
+    ui->listWidget->setItemWidget(newItem, buddy); //将buddy赋给该newItem
+
+
+   // QListWidgetItem *newItem=new QListWidgetItem(QIcon(s),file_name);    //创建一个Item
+   // newItem->setSizeHint(QSize(ui->listWidget->width()-50,25));//设置宽度、高度
+   // ui->listWidget->addItem(newItem);         //加到QListWidget中
+
+    //QListWidgetItem *item = new QListWidgetItem(QIcon(s),file_name);       //创建一个newItem
+    //ui->listWidget->insertItem(0,item); //将该newItem插入到后面
+    //this->setItemWidget(newItem, buddy); //将buddy赋给该newItem
 
     //FIXME:下面都是一些零时的代码
-    QImage image;//转换成QImage
-    image.load(s);
-    qDebug() << "image.height() = " << image.height();
-    qDebug() << "image.width() = " << image.width();
-    uchar *buf = (uchar *) malloc(image.height() * image.width() * 4);
-    uchar *tbuf = buf;
-    for(int h = 0; h < image.height(); h++)
-    {
-        for(int w = 0; w < image.width(); w++)
-        {
-            QColor color = image.pixelColor(w, h);
-            *(tbuf++) = (uchar)color.blue();
-            *(tbuf++) = (uchar)color.green();
-            *(tbuf++) = (uchar)color.red();
-            *(tbuf++) = (uchar)color.alpha();
-        }
-    }
-    DataSoruce * ds = new DataSoruce(buf,image.height(),image.width());
-    dataSoruceMap.insert(s, ds);
+//    uchar *buf = (uchar *) malloc(image.height() * image.width() * 4);
+//    uchar *tbuf = buf;
+//    for(int h = 0; h < image.height(); h++)
+//    {
+//        for(int w = 0; w < image.width(); w++)
+//        {
+//            QColor color = image.pixelColor(w, h);
+//            *(tbuf++) = (uchar)color.blue();
+//            *(tbuf++) = (uchar)color.green();
+//            *(tbuf++) = (uchar)color.red();
+//            *(tbuf++) = (uchar)color.alpha();
+//        }
+//    }
+//    DataSoruce * ds = new DataSoruce(buf,image.height(),image.width());
+//    dataSoruceMap.insert(s, ds);
 
-    connect(ui->up,SIGNAL(triggered()), ds, SLOT(slotDataUp()));
+//    connect(ui->up,SIGNAL(triggered()), ds, SLOT(slotDataUp()));
 
     //方法1
     QLabel *l = new QLabel;

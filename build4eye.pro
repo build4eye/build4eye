@@ -22,12 +22,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     algoserver.cpp \
     datasoruce.cpp \
+    filelistbuddy.cpp \
     main.cpp \
+    mainlistwidget.cpp \
     mainwindow.cpp
 
 HEADERS += \
     algoserver.h \
     datasoruce.h \
+    filelistbuddy.h \
+    mainlistwidget.h \
     mainwindow.h
 
 FORMS += \

@@ -80,6 +80,7 @@ void personList::mousePressEvent(QMouseEvent *event)
         }
     }
 }
+
 //菜单事件，为了显示菜单，点击鼠标右键响应，鼠标点击事件mousePressEvent优先于contextMenuEvent
 void personList::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -94,6 +95,7 @@ void personList::contextMenuEvent(QContextMenuEvent *event)
     else                                            //否则点击到的是好友
         personMenu->exec(QCursor::pos());
 }
+
 //添加组
 void personList::slotAddGroup()
 {
