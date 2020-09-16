@@ -11,6 +11,8 @@ public:
     explicit AlgoServer(QObject *parent = nullptr);
     ~AlgoServer();
 
+    void init(QWebSocket *pWebSocket);
+
 public slots:
     void slotWebsocketTextMessageReceived(const QString &message);
 

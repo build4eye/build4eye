@@ -10,6 +10,13 @@ AlgoServer::~AlgoServer()
 
 }
 
+void AlgoServer::init(QWebSocket *p)
+{
+    this->pWebSocket = p;
+    connect(this->pWebSocket, SIGNAL(textMessageReceived(QString)),this, SLOT(slotWebsocketTextMessageReceived(QString)));
+}
+
+
 void AlgoServer::slotWebsocketTextMessageReceived(const QString &message)
 {
     //    QWebSocket *pWebSocket = dynamic_cast<QWebSocket *>(sender());

@@ -6,7 +6,6 @@
 #include <QWebSocketServer>
 #include <QMessageBox>
 #include <QFileDialog>
-#include "datasoruce.h"
 #include "algoserver.h"
 
 QT_BEGIN_NAMESPACE
@@ -35,7 +34,6 @@ private:
     Ui::MainWindow *ui;
 
 public:
-    QMap<QString, DataSoruce*> dataSoruceMap;
     QMap<QString, AlgoServer*> algoServerMap;
 private:
     QWebSocketServer *_pWebSocketServer;

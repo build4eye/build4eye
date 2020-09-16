@@ -1,18 +1,21 @@
+#include "fileListBuddy.h"
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QTextEdit>
 #include <QMdiSubWindow>
 #include <QFileInfo>
 
-#include "fileListBuddy.h"
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //设置主窗体
     setWindowTitle("build4eye");
+    //TODO:更具显示屏的大小，初始化主窗体各个组件的大小，需要做到等比例放大
 
+    //监听websocket:10080端口，等待算法的链接，后续业务操作考信号与槽
     webSocketStartListen(10080);
 }
 
@@ -30,7 +33,7 @@ void MainWindow::webSocketStartListen(qint32 port)
 {
     _pWebSocketServer = new QWebSocketServer("build4eye",  QWebSocketServer::NonSecureMode, 0);
     if(_pWebSocketServer == NULL){
-        QMessageBox::information(this, QString::fromUtf8("警告"),QString::fromUtf8("new QWebSocketServer class fail"));
+        QMessageBox::warning(this, QString::fromUtf8("警告"),QString::fromUtf8("new QWebSocketServer class fail"));
         return ;
     }
     _pWebSocketServer->listen(QHostAddress::Any, port);
@@ -43,22 +46,22 @@ void MainWindow::slotNewWebsocketConn()
     QWebSocket *pWebSocket = _pWebSocketServer->nextPendingConnection();
     if(!pWebSocket)
     {
-        return;
+        QMessageBox::warning(this, QString::fromUtf8("警告"),QString::fromUtf8("new pWebSocket class fail"));
+        return ;
     }
 
     qDebug() << __FILE__ << __LINE__ << pWebSocket->peerAddress().toString() << pWebSocket->peerPort();
 
     AlgoServer * algo = new AlgoServer();
     if (algo == NULL){
-        QMessageBox::information(this, QString::fromUtf8("警告"),QString::fromUtf8("new AlgoServer class fail"));
+        QMessageBox::warning(this, QString::fromUtf8("警告"),QString::fromUtf8("new AlgoServer class fail"));
         return ;
     }
-
+    algo->init(pWebSocket);
     algoServerMap.insert(QString("%1-%2").arg(pWebSocket->peerAddress().toString()).arg(pWebSocket->peerPort()) , algo);
 
-    algo->pWebSocket = pWebSocket;
+    //websocket断开
     connect(pWebSocket, SIGNAL(disconnected()), this, SLOT(slotNewWebsocketDisconn()));
-    connect(pWebSocket, SIGNAL(textMessageReceived(QString)),algo, SLOT(slotWebsocketTextMessageReceived(QString)));
 }
 
 void MainWindow::slotNewWebsocketDisconn()
@@ -66,6 +69,7 @@ void MainWindow::slotNewWebsocketDisconn()
     QWebSocket *pWebSocket = dynamic_cast<QWebSocket *>(sender());
     if(!pWebSocket)
     {
+        QMessageBox::warning(this, QString::fromUtf8("警告"),QString::fromUtf8("delete pWebSocket class is null"));
         return;
     }
     QString key = QString("%1-%2").arg(pWebSocket->peerAddress().toString())
@@ -83,34 +87,17 @@ void MainWindow::slotNewWebsocketDisconn()
 
 void MainWindow::on_openfilebutton_triggered()
 {
-    QString image_size;
+    //在资源管理器中，打开并加载文件
     QString s = QFileDialog::getOpenFileName(this,"选择文件","/", "Files(*.*)");
-    QImage image;//转换成QImage
-    image.load(s);
+    if(s == NULL) return;
 
-    //创建一个文件对象
-    QFileInfo fi;
-    QString file_name;
-    fi = QFileInfo(s);
-    file_name = fi.fileName();
     fileListBuddy *buddy= new fileListBuddy();
-
-    QPixmap pixmap = QPixmap::fromImage(image);
-    int with = buddy->head->width();
-    int height = buddy->head->height();
-    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
-    image_size = QString::number(image.width())+" x "+QString::number(image.height());
-
-    buddy->head->setPixmap(fitpixmap);
-    buddy->name->setText(file_name);
-    buddy->size->setText(image_size);
-    buddy->sign->setText(s);
-
     QListWidgetItem *newItem = new QListWidgetItem();       //创建一个newItem
+    buddy->initUi(s,newItem,ui->listWidget,ui->mdiArea);
+
     newItem->setSizeHint(QSize(ui->listWidget->width() - 5,74));
     ui->listWidget->insertItem(ui->listWidget->count(),newItem); //将该newItem插入到后面
     ui->listWidget->setItemWidget(newItem, buddy); //将buddy赋给该newItem
-
 
    // QListWidgetItem *newItem=new QListWidgetItem(QIcon(s),file_name);    //创建一个Item
    // newItem->setSizeHint(QSize(ui->listWidget->width()-50,25));//设置宽度、高度
@@ -139,20 +126,7 @@ void MainWindow::on_openfilebutton_triggered()
 
 //    connect(ui->up,SIGNAL(triggered()), ds, SLOT(slotDataUp()));
 
-    //方法1
-    QLabel *l = new QLabel;
-    l->setPixmap(QPixmap::fromImage(image));
-    ui->mdiArea->addSubWindow(l);
-    l->show();
-    //方法2
-    //    QLabel *l = new QLabel;
-    //    l->setPixmap(QPixmap::fromImage(image));
-    //    QMdiSubWindow *newwin = new QMdiSubWindow;
-    //    newwin->resize(200,200);
-    //    newwin->setAttribute(Qt::WA_DeleteOnClose);
-    //    newwin->setWidget(l);
-    //    ui->mdiArea->addSubWindow(newwin);     //将window1放进mdiArea框架
-    //    newwin->show();
+
 }
 
 void MainWindow::on_up_triggered()
