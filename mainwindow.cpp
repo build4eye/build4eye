@@ -5,6 +5,7 @@
 #include <QTextEdit>
 #include <QMdiSubWindow>
 #include <QFileInfo>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,6 +18,84 @@ MainWindow::MainWindow(QWidget *parent)
 
     //监听websocket:10080端口，等待算法的链接，后续业务操作考信号与槽
     webSocketStartListen(10080);
+
+    //设置窗体组件样式
+    ui->listWidget->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal"
+                                         "{"
+                                         "height:8px;"
+                                         "background:rgba(0,0,0,0%);"
+                                         "margin:0px,0px,0px,0px;"
+                                         "padding-left:0px;"
+                                         "padding-right:0px;"
+                                         "}"
+                                         "QScrollBar::handle:horizontal"
+                                         "{"
+                                         "height:8px;"
+                                         "background:rgba(0,0,0,25%);"
+                                         " border-radius:4px;"
+                                         "min-height:20;"
+                                         "}"
+                                         "QScrollBar::handle:horizontal:hover"
+                                         "{"
+                                         "height:8px;"
+                                         "background:rgba(0,0,0,50%);"
+                                         " border-radius:4px;"
+                                         "min-height:20;"
+                                         "}"
+                                         "QScrollBar::add-line:horizontal"
+                                         "{"
+                                         "height:0px;width:0px;"
+                                         "subcontrol-position:bottom;"
+                                         "}"
+                                         "QScrollBar::sub-line:horizontal"
+                                         "{"
+                                         "height:0px;width:0px;"
+                                         "subcontrol-position:top;"
+                                         "}"
+                                         "QScrollBar::add-page:horizontal,QScrollBar::sub-page:horizontal"
+                                         "{"
+                                         "background:rgba(0,0,0,10%);"
+                                         "border-radius:4px;"
+                                         "}"
+                                         );
+    ui->listWidget->verticalScrollBar()->setStyleSheet("QScrollBar:vertical"
+                                       "{"
+                                       "width:8px;"
+                                       "background:rgba(0,0,0,0%);"
+                                       "margin:0px,0px,0px,0px;"
+                                       "padding-top:0px;"
+                                       "padding-bottom:0px;"
+                                       "}"
+                                       "QScrollBar::handle:vertical"
+                                       "{"
+                                       "width:8px;"
+                                       "background:rgba(0,0,0,25%);"
+                                       " border-radius:4px;"
+                                       "min-height:20;"
+                                       "}"
+                                       "QScrollBar::handle:vertical:hover"
+                                       "{"
+                                       "width:8px;"
+                                       "background:rgba(0,0,0,50%);"
+                                       " border-radius:4px;"
+                                       "min-height:20;"
+                                       "}"
+                                       "QScrollBar::add-line:vertical"
+                                       "{"
+                                       "height:0px;width:0px;"
+                                       "subcontrol-position:bottom;"
+                                       "}"
+                                       "QScrollBar::sub-line:vertical"
+                                       "{"
+                                       "height:0px;width:0px;"
+                                       "subcontrol-position:top;"
+                                       "}"
+                                       "QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical"
+                                       "{"
+                                       "background:rgba(0,0,0,10%);"
+                                       "border-radius:4px;"
+                                       "}"
+                                       );
 }
 
 MainWindow::~MainWindow()
