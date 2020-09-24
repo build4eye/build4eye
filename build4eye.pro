@@ -24,16 +24,19 @@ SOURCES += \
     filelistbuddy.cpp \
     main.cpp \
     mainwindow.cpp \
-    windowbuddy.cpp
+    windowbuddy.cpp \
+    windowform.cpp
 
 HEADERS += \
     algoserver.h \
     filelistbuddy.h \
     mainwindow.h \
-    windowbuddy.h
+    windowbuddy.h \
+    windowform.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    windowform.ui
 
 #include($$PWD/algoServerManager/algoServerManager.pri)
 

@@ -1,5 +1,6 @@
 #include "windowbuddy.h"
-#include "fileListBuddy.h"
+#include "filelistbuddy.h"
+#include "windowform.h"
 
 #include <QPainter>
 #include <QAction>
@@ -88,9 +89,9 @@ void fileListBuddy::slotOpenMdiArea()
     QImage image;//转换成QImage
     image.load(filePath);
 
-    //方法1
-    Windowbuddy *buddy = new Windowbuddy;
+    windowform *buddy = new windowform;
     buddy->setImage(image);
+
     this->mdiArea->addSubWindow(buddy);
     buddy->show();
 }

@@ -1,4 +1,4 @@
-#include "fileListBuddy.h"
+#include "filelistbuddy.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
