@@ -63,12 +63,16 @@ void fileListBuddy::initUi(QString filePath,QListWidgetItem *newItem, QListWidge
 
     //添加点击
     QAction *openDraw = new QAction("新窗体", this);
+    QAction *copyFile = new QAction("克隆", this);
     QAction *delFile = new QAction("关闭", this);
+
     menu->addAction(openDraw);
+    menu->addAction(copyFile);
     menu->addAction(delFile);
 
     connect(openDraw,SIGNAL(triggered()),this,SLOT(slotOpenMdiArea()));
     connect(delFile,SIGNAL(triggered()),this,SLOT(slotDelBuddy()));
+    connect(copyFile,SIGNAL(triggered()),this,SLOT(slotCopyBuddy()));
 }
 
 //菜单事件，为了显示菜单，点击鼠标右键响应，鼠标点击事件mousePressEvent优先于contextMenuEvent
@@ -96,6 +100,16 @@ void fileListBuddy::slotOpenMdiArea()
     buddy->show();
 }
 
+void fileListBuddy::slotCopyBuddy()
+{
+    fileListBuddy *buddy= new fileListBuddy();
+    QListWidgetItem *newItem = new QListWidgetItem();       //创建一个newItem
+    buddy->initUi(this->filePath,newItem,this->listWidget,this->mdiArea);
+
+    newItem->setSizeHint(QSize(this->listWidget->width() - 5,74));
+    this->listWidget->insertItem(this->listWidget->count(),newItem); //将该newItem插入到后面
+    this->listWidget->setItemWidget(newItem, buddy); //将buddy赋给该newItem
+}
 
 
 

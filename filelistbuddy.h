@@ -34,6 +34,7 @@ signals:
 public slots:
     void slotDelBuddy();
     void slotOpenMdiArea();
+    void slotCopyBuddy();
 
 };
 
