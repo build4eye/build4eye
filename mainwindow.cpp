@@ -141,6 +141,7 @@ void MainWindow::slotNewWebsocketConn()
 
     //websocket断开
     connect(pWebSocket, SIGNAL(disconnected()), this, SLOT(slotNewWebsocketDisconn()));
+    //TODO hai xu yao clear algo
 }
 
 void MainWindow::slotNewWebsocketDisconn()

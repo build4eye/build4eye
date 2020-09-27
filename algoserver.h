@@ -13,6 +13,7 @@ public:
 
     void init(QWebSocket *pWebSocket);
 
+
 public slots:
     void slotWebsocketTextMessageReceived(const QString &message);
 

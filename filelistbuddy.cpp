@@ -32,8 +32,8 @@ void fileListBuddy::initUi(QString filePath,QListWidgetItem *newItem, QListWidge
     sign->setPalette(color);
     head->move(7,7);
     name->move(74,10);
-    size->move(74,35);
-    sign->move(74,55);
+    size->move(74,33);
+    sign->move(74,50);
 
     //加载缩放图片，按比例缩放
     QImage image;//转换成QImage
